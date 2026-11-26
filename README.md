@@ -1,21 +1,23 @@
-# Exploratory Studies of Physical Placement & Routing Trade-Offs
+# Exploratory Studies of Coupler Avoidance vs. SWAP Overhead
 
 *Portfolio Hub: [Prometheus Quantum Overview](https://github.com/PrometheusDynamicsCanada/prometheus-quantum-overview) · [Master CSV](MASTER_RESULTS.csv) · [Reproduction Guide](REPRODUCE.md)*
 
-## Introduction
+Routing a quantum circuit around a noisy hardware coupler avoids high two-qubit error rates but adds extra SWAP gates that introduce their own decoherence. Across five early exploratory studies on 156-qubit IBM Fez, Marrakesh, and Kingston, we measured when detour routing helps and when added gate depth hurts more than the bad links it avoids.
 
-- **The question:** When does routing around noisy hardware couplers improve output accuracy, and when do the extra SWAP gates hurt more than the noisy links they avoid?
-- **The test:** Across five exploratory mechanistic studies (`14` archived IBM Heron jobs, `774` PUBs, `4,125,440` physical shots on `ibm_fez`, `ibm_marrakesh`, and `ibm_kingston`), we compared detour-routed placements against Qiskit SABRE O3 across `3Q-13Q` circuits.
-- **The finding:** On `40` matched `6Q-9Q` randomized circuits (`Exp 02`), detour routing improved Squared Hellinger Fidelity in **`30/40` (`75.0%`)** instances and lost in **`10/40` (`25.0%`)**. Separately (`Exp 01` & `04`), deeper paths lowered Shannon entropy while worsening ideal-state divergence, and cut `13Q` all-zero (`0...0`) counts by **`-62.9%`** (`206` vs. `555` shots).
-- **The significance:** Establishes empirically why production compilation must weigh coupler error against added gate count rather than routing around bad links unconditionally.
-- **The boundary:** Gains at `6Q-9Q` reversed to losses at `10Q` (`Exp 03`) and on uniform chip sectors (`Exp 05`); physical mechanisms behind `Exp 04` entropy shifts remain open interpretations.
-- **The evidence:** Opening `Exp 02` trade-off chart and 5-study table below, with raw Qiskit `BitArray` verification underneath.
+Across 40 matched 6-to-9-qubit randomized circuits on IBM Marrakesh, detour routing improved Squared Hellinger Fidelity over Qiskit SABRE O3 in 30 of 40 cases (75.0%) and lost in 10 of 40 cases (25.0%) where SWAP overhead dominated. Separate experiments documented how deeper paths alter output entropy and reduced all-zero bitstring counts on 13-qubit circuits by 62.9%.
+
+Gains at 6 to 9 qubits reversed to losses at 10 qubits in uniform-sector tests, demonstrating why Prometheus's production compiler weighs coupler error against added gate count instead of routing around weak links unconditionally.
+
+This repository contains the raw measurement archives and offline verification scripts from 14 exploratory IBM Quantum jobs (4.13 million measurement shots).
 
 ![Randomized Scaling Trends and Gate-Overhead Trade-Offs](02-randomized-instance-robustness/assets/scaling_trend.png)
-*Opening summary (`Experiment 02`, `40` matched `6Q-9Q` pairs on `ibm_marrakesh`): `30/40` hardware-aware wins alongside `10/40` SWAP-overhead losses.*
+*Summary figure: Squared Hellinger Fidelity across 40 matched 6-to-9-qubit circuit pairs on IBM Marrakesh (30 detour wins alongside 10 SWAP-overhead losses).*
+
+**[Read the detailed results](#detailed-results) · [Verify the data](#verify-the-data) · [Request an evaluation](https://prometheusdynamics.ca/connect/) · [Book a demonstration](mailto:william@prometheusdynamics.ca?subject=Prometheus%20Evaluation)**
 
 ---
 
+<a id="detailed-results"></a>
 ## Summary of the Five Exploratory Studies (`14` IBM Heron Jobs, `774` PUBs, `4,125,440` Shots)
 
 | Study | Processor(s) & Job ID(s) | Scope & Shots | Primary Metrics | Measured Finding |
@@ -30,11 +32,12 @@
 
 ---
 
+<a id="verify-the-data"></a>
 ## Inspect the Evidence & Reproduce Supported Checks Offline
 
 - **Command:** `python verify_sha256_evidence.py` (plus per-study `verify_benchmark.py` scripts in [`REPRODUCE.md`](REPRODUCE.md))
 - **Dependencies & measured runtime:** Python 3 standard library (`0` cloud credentials, **`~0.04 s`** for `verify_sha256_evidence.py`; `numpy` for per-study tensor scripts).
-- **Start a pilot:** [william@prometheusdynamics.ca](mailto:william@prometheusdynamics.ca) | [prometheusdynamics.ca](https://prometheusdynamics.ca)
+- **Request an evaluation or book a demonstration:** [prometheusdynamics.ca/connect](https://prometheusdynamics.ca/connect/) | [william@prometheusdynamics.ca](mailto:william@prometheusdynamics.ca?subject=Prometheus%20Evaluation)
 
 ---
 
